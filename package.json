@@ -4,7 +4,9 @@
   "description": "Just a test of browserfy",
   "main": "example.js",
   "dependencies": {
-    "beefy": "^2.1.5"
+    "beefy": "^2.1.5",
+    "framebus": "^2.0.3",
+    "inherits": "^2.0.1"
   },
   "devDependencies": {},
   "scripts": {
