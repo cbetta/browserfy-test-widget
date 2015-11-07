@@ -1,16 +1,15 @@
 {
-  "name": "browserfy-test",
+  "name": "browserfy-test-widget",
   "version": "1.0.0",
   "description": "Just a test of browserfy",
   "main": "example.js",
   "dependencies": {
-    "beefy": "^2.1.5",
-    "jquery": "^2.1.4"
+    "beefy": "^2.1.5"
   },
   "devDependencies": {},
   "scripts": {
-    "start": "beefy js/main.js --index=html/index.html -- --standalone widget"
+    "start": "beefy js/main.js --index=html/index.html 3000 -- --standalone widget"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Cristiano Betta",
+  "license": "MIT"
 }

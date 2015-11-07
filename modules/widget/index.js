@@ -3,7 +3,7 @@ module.exports = Widget;
 function Widget (opts) {
     if (!(this instanceof Widget)) return new Widget(opts);
     this.element = document.createElement('iframe');
-    this.element.setAttribute('src', '/html/iframe.html');
+    this.element.setAttribute('src', 'http://localhost:3001/');
 }
 
 Widget.prototype.appendTo = function (target) {
