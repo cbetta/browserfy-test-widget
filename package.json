@@ -1,0 +1,16 @@
+{
+  "name": "browserfy-test",
+  "version": "1.0.0",
+  "description": "Just a test of browserfy",
+  "main": "example.js",
+  "dependencies": {
+    "beefy": "^2.1.5",
+    "jquery": "^2.1.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "beefy js/main.js --index=html/index.html -- --standalone widget"
+  },
+  "author": "",
+  "license": "ISC"
+}
