@@ -8,10 +8,12 @@ var buffer      = require('vinyl-buffer');
 var gutil       = require('gulp-util');
 var watchify    = require('watchify');
 var assign      = require('lodash.assign');
+var webserver   = require('gulp-webserver');
 
 browserifyOptions = {
   entries: ['./js/main.js'],
-  debug: true
+  debug: true,
+  standalone: 'widget'
 };
 allOptions = assign({}, watchify.args, browserifyOptions);
 var browserifyBuild = browserify(allOptions);
@@ -27,7 +29,15 @@ gulp.task('build', ['lint'], function() {
   return build(browserifyBuild);
 });
 
-gulp.task('watch', function() {
+gulp.task('serve', function() {
+  gulp.src('build')
+    .pipe(webserver({
+      livereload: true,
+      open: true
+    }));
+});
+
+gulp.task('watch', ['lint'], function() {
   b = watchify(browserifyBuild);
   b.on('update', function(){
     build(b);
@@ -35,6 +45,8 @@ gulp.task('watch', function() {
   b.on('log', gutil.log);
   return build(b);
 })
+
+gulp.task('default', ['watch', 'serve']);
 
 function build(b) {
   return b.bundle()
