@@ -1,5 +1,5 @@
 var Widget = require('app/widget');
-bus = require('framebus');
+var bus = require('framebus');
 
 exports.setup = function(selector){
   var w = new Widget();
@@ -7,4 +7,4 @@ exports.setup = function(selector){
   w.on('ready', function(target, data){
     console.log("Child ("+data.url+") reported ready");
   });
-}
+};
