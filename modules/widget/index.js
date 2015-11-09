@@ -1,3 +1,5 @@
+'use strict';
+
 var inherits = require('inherits');
 var EventEmitter = require('events').EventEmitter;
 var bus = require('framebus');

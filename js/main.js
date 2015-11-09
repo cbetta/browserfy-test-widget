@@ -1,3 +1,5 @@
+'use strict';
+
 var Widget = require('app/widget');
 var bus = require('framebus');
 
