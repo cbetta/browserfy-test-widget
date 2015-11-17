@@ -10,49 +10,86 @@ var watchify    = require('watchify');
 var assign      = require('lodash.assign');
 var webserver   = require('gulp-webserver');
 
-browserifyOptions = {
-  entries: ['./js/main.js'],
+widgetOptions = {
+  entries: ['./js/widget/main.js'],
   debug: true,
   standalone: 'widget'
 };
-allOptions = assign({}, watchify.args, browserifyOptions);
-var browserifyBuild = browserify(allOptions);
+allWidgetOptions = assign({}, watchify.args, widgetOptions);
+var widgetBuild = browserify(allWidgetOptions);
+
+iframeOptions = {
+  entries: ['./js/iframe/main.js'],
+  debug: true,
+  standalone: 'iframe'
+};
+allIframeOptions = assign({}, watchify.args, iframeOptions);
+var iframeBuild = browserify(allIframeOptions);
 
 gulp.task('lint', function() {
-  return gulp.src(['js/*.js', 'modules/**/*.js'])
+  return gulp.src(['js/*.js'])
     .pipe(jshint())
     .pipe(jshint.reporter(stylish))
     .pipe(jshint.reporter('fail'));
 });
 
-gulp.task('build', ['lint'], function() {
-  return build(browserifyBuild);
+gulp.task('build-widget', ['lint'], function() {
+  return build(widgetBuild, 'dropin.js', './build/widget/');
 });
 
-gulp.task('serve', function() {
-  gulp.src('build')
+gulp.task('build-iframe', ['lint'], function() {
+  return build(iframeBuild, 'iframe.js', './build/iframe/');
+});
+
+gulp.task('build', ['lint', 'build-widget', 'build-iframe']);
+
+gulp.task('serve-widget', function() {
+  gulp.src('build/widget')
     .pipe(webserver({
-      livereload: true,
+      port: 3000,
+      livereload: {enable: true, port: 2345},
       open: true
     }));
 });
 
-gulp.task('watch', ['lint'], function() {
-  b = watchify(browserifyBuild);
+gulp.task('serve-iframe', function() {
+  gulp.src('build/iframe')
+    .pipe(webserver({
+      port: 3001,
+      livereload: {enable: true, port: 2346},
+      open: false
+    }));
+});
+
+gulp.task('serve', ['serve-iframe', 'serve-widget']);
+
+gulp.task('watch-widget', ['lint'], function() {
+  b = watchify(widgetBuild);
   b.on('update', function(){
-    build(b);
+    build(widgetBuild, 'dropin.js', './build/widget/');
   });
   b.on('log', gutil.log);
-  return build(b);
-})
+  return build(widgetBuild, 'dropin.js', './build/widget/');
+});
+
+gulp.task('watch-iframe', ['lint'], function() {
+  b = watchify(iframeBuild);
+  b.on('update', function(){
+    build(iframeBuild, 'iframe.js', './build/iframe/');
+  });
+  b.on('log', gutil.log);
+  return build(iframeBuild, 'iframe.js', './build/iframe/');
+});
+
+gulp.task('watch', ['watch-widget', 'watch-iframe']);
 
 gulp.task('default', ['watch', 'serve']);
 
-function build(b) {
+function build(b, filename, target) {
   return b.bundle()
-    .pipe(source('widget.js'))
+    .pipe(source(filename))
     .pipe(buffer())
     .pipe(uglify())
     .on('error', gutil.log)
-    .pipe(gulp.dest('./build/'));
+    .pipe(gulp.dest(target));
 }
