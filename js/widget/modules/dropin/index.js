@@ -35,7 +35,12 @@ class Widget extends EventEmitter{
     }
 
     bus.on('widget-data', (data) => {
-      document.getElementById('result').textContent = `Name: ${data.name}`;
+      let element = document.createElement('input');
+      element.setAttribute('name', 'name');
+      element.setAttribute('type', 'hidden');
+      element.setAttribute('value', data.name);
+      form.appendChild(element);
+      form.submit();
     });
 
     form.addEventListener('submit', (event)=>{

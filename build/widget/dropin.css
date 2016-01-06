@@ -54,9 +54,5 @@ body {
 }
 
 iframe {
-	height: 80px;
-}
-
-#result {
-	padding: 1em 0;
+	height: 100px;
 }

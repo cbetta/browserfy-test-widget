@@ -49,6 +49,11 @@ table {
 
 /* IFRAME STYLES */
 
+body {
+	background-color: #f2f2f2;
+	padding: 1em;
+}
+
 form {
 	margin: 1em 0;
 }
