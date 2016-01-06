@@ -9,6 +9,7 @@ var gutil       = require('gulp-util');
 var watchify    = require('watchify');
 var assign      = require('lodash.assign');
 var webserver   = require('gulp-webserver');
+var babel       = require('gulp-babel');
 
 widgetOptions = {
   entries: ['./js/widget/main.js'],
@@ -89,6 +90,7 @@ function build(b, filename, target) {
   return b.bundle()
     .pipe(source(filename))
     .pipe(buffer())
+    .pipe(babel({presets: ['es2015']}))
     .pipe(uglify())
     .on('error', gutil.log)
     .pipe(gulp.dest(target));

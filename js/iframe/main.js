@@ -1,8 +1,8 @@
 'use strict';
 
-var bus = require('framebus');
+const bus = require('framebus');
 
-bus.emit('widget-message', {
+bus.emit('widget-ready', {
   method: 'ready',
   data: {
     url: document.location.href
@@ -10,6 +10,11 @@ bus.emit('widget-message', {
 });
 
 
-bus.on('parent-message', function (data) {
+bus.on('parent-ready', function (data) {
   console.log('Parent ('+data+') reported back');
 });
+
+bus.on('submit', function (data) {
+  let name = document.getElementById('name')
+  bus.emit('widget-data', {name: name.value});
+})

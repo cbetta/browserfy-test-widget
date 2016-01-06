@@ -1,26 +1,48 @@
 'use strict';
 
-var inherits = require('inherits');
-var EventEmitter = require('events').EventEmitter;
-var bus = require('framebus');
+const inherits = require('inherits');
+const EventEmitter = require('events').EventEmitter;
+const bus = require('framebus');
 
-inherits(Widget, EventEmitter);
-module.exports = Widget;
 
-function Widget (opts) {
-    if (!(this instanceof Widget)) return new Widget(opts);
+class Widget extends EventEmitter{
+  constructor(opts) {
+    super();
     this.element = document.createElement('iframe');
     this.element.setAttribute('src', 'http://localhost:3001/');
-}
+  }
 
-Widget.prototype.appendTo = function (target) {
-    if (typeof target === 'string') target = document.querySelector(target);
+  appendTo(target) {
+      if (typeof target === 'string') target = document.querySelector(target);
 
-    var _this = this;
-    bus.on('widget-message', function (message) {
-      _this.emit(message.method, target, message.data);
-      bus.emit('parent-message', document.location.href);
+      this.handleMessages(target);
+      this.interceptSubmit(target);
+
+      target.appendChild(this.element);
+  };
+
+  handleMessages(target) {
+    bus.on('widget-ready', (message) => {
+      this.emit(message.method, target, message.data);
+      bus.emit('parent-ready', document.location.href);
+    });
+  }
+
+  interceptSubmit(target) {
+    let form = target;
+    while (form && form.nodeName != 'FORM') {
+      form = form.parentNode;
+    }
+
+    bus.on('widget-data', (data) => {
+      document.getElementById('result').textContent = `Name: ${data.name}`;
     });
 
-    target.appendChild(this.element);
-};
+    form.addEventListener('submit', (event)=>{
+      event.preventDefault();
+      bus.emit("submit");
+    })
+  }
+}
+
+module.exports = Widget;
